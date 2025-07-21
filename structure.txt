@@ -1,0 +1,69 @@
+my-portfolio/
+│
+├── app/                          # ✅ Next.js App Router
+│   ├── (public)/                 # Public-facing pages
+│   │   ├── layout.tsx            # Main layout (header, footer, theme)
+│   │   ├── page.tsx              # Home page (About Me)
+│   │   ├── projects/
+│   │   │   └── page.tsx          # Projects showcase (SSR/ISR)
+│   │   ├── contact/
+│   │   │   └── page.tsx          # Contact form
+│   │   └── blog/
+│   │       └── page.tsx          # Blog list (optional)
+│   │
+│   ├── (auth)/                   # Auth-related pages
+│   │   ├── login/
+│   │   │   └── page.tsx
+│   │   └── callback/             # OAuth callbacks (if needed)
+│   │       └── page.tsx
+│   │
+│   ├── (admin)/                  # Admin-only pages (protected)
+│   │   ├── layout.tsx            # Admin layout
+│   │   ├── dashboard/
+│   │   │   └── page.tsx          # Overview
+│   │   ├── projects/
+│   │   │   ├── page.tsx          # List all projects
+│   │   │   └── new/page.tsx      # Add/Edit project form
+│   │   └── blog/
+│   │       ├── page.tsx
+│   │       └── new/page.tsx
+│   │
+│   ├── api/                      # ✅ API Routes (server actions)
+│   │   ├── contact/route.ts      # Handle contact form submissions
+│   │   ├── projects/route.ts     # CRUD for projects (Admin only)
+│   │   └── auth/route.ts         # Custom auth (optional)
+│   │
+│   ├── globals.css               # Tailwind global styles
+│   └── layout.tsx                # Root layout (SEO + ThemeProvider)
+│
+├── components/                   # ✅ Reusable Components
+│   ├── ui/                       # Shadcn UI components (Button, Card, etc.)
+│   ├── Header.tsx
+│   ├── Footer.tsx
+│   ├── ProjectCard.tsx
+│   ├── ContactForm.tsx
+│   ├── ThemeToggle.tsx
+│   └── AuthProvider.tsx
+│
+├── lib/
+│   ├── supabaseClient.ts         # ✅ Supabase client init
+│   ├── auth.ts                   # Auth helper (getSession, getUser)
+│   ├── validations.ts            # Zod or Yup validation schemas
+│   ├── seo.ts                     # Default SEO metadata
+│   └── utils.ts                  # Utility functions
+│
+├── public/                       # Static files (resume, favicon, images)
+│   ├── favicon.ico
+│   ├── logo.png
+│   └── resume.pdf
+│
+├── types/
+│   ├── project.ts                # TypeScript types for Projects
+│   ├── contact.ts
+│   └── user.ts
+│
+├── .env.local                    # ✅ Environment variables (not committed)
+├── tailwind.config.js
+├── tsconfig.json
+├── package.json
+└── README.md
