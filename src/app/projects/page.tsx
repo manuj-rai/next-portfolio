@@ -1,25 +1,40 @@
 import { supabase } from "@/lib/supabaseClient";
+import ProjectCard from "@/components/ProjectCard";
 
 export default async function ProjectsPage() {
-  const { data: projects } = await supabase.from("projects").select("*");
+  const { data: projects, error } = await supabase
+    .from("projects")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    return (
+      <div className="text-center py-20">
+        <p className="text-red-500 text-lg">
+          ⚠ Error loading projects: {error.message}
+        </p>
+      </div>
+    );
+  }
+
+  if (!projects || projects.length === 0) {
+    return (
+      <div className="text-center py-20">
+        <p className="text-gray-500 text-lg">No projects found yet</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="grid md:grid-cols-2 gap-6">
-      {projects?.map((p) => (
-        <div key={p.id} className="border p-4 rounded-lg shadow bg-white">
-          <img
-            src={p.image_url}
-            alt={p.title}
-            className="rounded mb-2 w-full h-40 object-cover"
-          />
-          <h3 className="text-lg font-bold">{p.title}</h3>
-          <p className="text-sm text-gray-600">{p.description}</p>
-          <div className="mt-2 flex gap-4 text-blue-600">
-            {p.live_url && <a href={p.live_url}>Live</a>}
-            {p.github_url && <a href={p.github_url}>GitHub</a>}
-          </div>
-        </div>
-      ))}
+    <div className="px-4 py-12 max-w-7xl mx-auto">
+      <h1 className="text-4xl font-bold text-center mb-12 bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">
+        My Projects
+      </h1>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {projects.map((project, index) => (
+          <ProjectCard key={project.id} project={project} index={index} />
+        ))}
+      </div>
     </div>
   );
 }
