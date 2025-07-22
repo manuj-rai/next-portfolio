@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Moon, Sun, Home, Folder, Mail, User, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -13,6 +14,7 @@ export default function Navbar() {
   const [mounted, setMounted] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [visible, setVisible] = useState(true);
+  const [user, setUser] = useState<any>(null);
 
   const navItems = [
     { name: "Home", href: "/", icon: <Home size={20} /> },
@@ -25,18 +27,14 @@ export default function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        setVisible(false);
-      } else {
-        setVisible(true);
-      }
+      setVisible(!(currentScrollY > lastScrollY && currentScrollY > 100));
       setLastScrollY(currentScrollY);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
-  // ✅ Theme handling (persisted in localStorage)
+  // ✅ Theme handling
   useEffect(() => {
     setMounted(true);
     const savedTheme =
@@ -55,9 +53,32 @@ export default function Navbar() {
   const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
   const isActive = (href: string) => pathname === href;
 
+  // ✅ Supabase Auth
+  useEffect(() => {
+    const getUser = async () => {
+      const { data } = await supabase.auth.getUser();
+      setUser(data.user);
+    };
+    getUser();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, []);
+
+  const logout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setProfileOpen(false);
+  };
+
   return (
     <>
-      {/* ✅ Top Desktop Navbar */}
+      {/* ✅ Top Navbar */}
       <motion.nav
         initial={{ y: 0 }}
         animate={{ y: visible ? 0 : -100 }}
@@ -112,7 +133,7 @@ export default function Navbar() {
               )}
             </button>
 
-            {/* Profile Dropdown */}
+            {/* ✅ Unified Profile/Login Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setProfileOpen(!profileOpen)}
@@ -137,45 +158,49 @@ export default function Navbar() {
                     className="absolute right-0 mt-2 w-48 bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-lg shadow-lg border border-gray-200/50 dark:border-gray-700/50 overflow-hidden"
                     onMouseLeave={() => setProfileOpen(false)}
                   >
-                    <Link
-                      href="/profile"
-                      className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-700/50"
-                    >
-                      Your Profile
-                    </Link>
-                    <Link
-                      href="/settings"
-                      className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-700/50"
-                    >
-                      Settings
-                    </Link>
-                    <div className="border-t border-gray-200/50 dark:border-gray-700/50">
-                      <Link
-                        href="/logout"
-                        className="block px-4 py-3 text-red-500 hover:bg-red-50/50 dark:hover:bg-red-900/20"
-                      >
-                        Sign Out
-                      </Link>
-                    </div>
+                    {!user ? (
+                      <>
+                        <Link
+                          href="/admin/login"
+                          className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-700/50"
+                        >
+                          Login
+                        </Link>
+                        <Link
+                          href="/settings"
+                          className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-700/50"
+                        >
+                          Settings
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <Link
+                          href="/admin/dashboard"
+                          className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-700/50"
+                        >
+                          Admin
+                        </Link>
+                        <Link
+                          href="/settings"
+                          className="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-700/50"
+                        >
+                          Settings
+                        </Link>
+                        <div className="border-t border-gray-200/50 dark:border-gray-700/50">
+                          <button
+                            onClick={logout}
+                            className="w-full text-left px-4 py-3 text-red-500 hover:bg-red-50/50 dark:hover:bg-red-900/20"
+                          >
+                            Sign Out
+                          </button>
+                        </div>
+                      </>
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
-          </div>
-
-          {/* Mobile Theme Toggle */}
-          <div className="md:hidden flex items-center gap-4">
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-full bg-gray-100/50 dark:bg-gray-700/50"
-              aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-            >
-              {theme === "light" ? (
-                <Moon size={18} className="text-gray-700" />
-              ) : (
-                <Sun size={18} className="text-yellow-300" />
-              )}
-            </button>
           </div>
         </div>
       </motion.nav>
@@ -196,6 +221,7 @@ export default function Navbar() {
                   ? "text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-gray-700/50"
                   : "text-gray-600 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-700/50"
               }`}
+              onClick={() => setProfileOpen(false)}
             >
               {item.icon}
             </Link>

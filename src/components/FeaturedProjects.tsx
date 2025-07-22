@@ -29,8 +29,8 @@ export default function FeaturedProjects() {
       const { data, error } = await supabase
         .from("projects")
         .select("*")
-        .order("created_at", { ascending: false })
-        .limit(6); // Show only top 6 projects
+        .order("created_at", { ascending: true })
+        .limit(3);
 
       if (error) console.error("Error fetching projects:", error);
       else setProjects(data || []);
