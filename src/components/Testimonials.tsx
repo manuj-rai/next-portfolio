@@ -129,7 +129,7 @@ export default function Testimonials() {
 
                 {/* Feedback */}
                 <blockquote className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6 text-lg italic">
-                  "{testimonial.feedback}"
+                  &quot;{testimonial.feedback}&quot;
                 </blockquote>
 
                 {/* Rating */}
