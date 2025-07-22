@@ -57,7 +57,7 @@ export default function HeroSection() {
           </motion.div>
 
           <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 dark:text-white leading-tight mb-4">
-            Hi, I'm{" "}
+            Hi, I&apos;m{" "}
             <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 dark:from-blue-400 dark:via-purple-400 dark:to-blue-300 bg-clip-text text-transparent">
               Manuj Rai
             </span>

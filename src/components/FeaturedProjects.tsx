@@ -265,7 +265,7 @@ export default function FeaturedProjects() {
               No Projects Yet
             </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-6">
-              Projects will appear here once they're added to the database.
+              Projects will appear here once they&apos;re added to the database.
             </p>
             <Link
               href="/contact"

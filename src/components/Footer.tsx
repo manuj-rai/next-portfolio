@@ -95,7 +95,7 @@ export default function Footer() {
             </Link>
             <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md">
               Full-stack developer passionate about creating beautiful, functional, and user-centered digital experiences. 
-              Let's build something amazing together.
+              Let&apos;s build something amazing together.
             </p>
             
             {/* Contact Info */}

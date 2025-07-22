@@ -76,7 +76,7 @@ export default function Testimonials() {
             What People Say
           </h2>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Don't just take my word for it - hear what clients and collaborators have to say about working together.
+            Don&apos;t just take my word for it - hear what clients and collaborators have to say about working together.
           </p>
         </motion.div>
 
@@ -188,7 +188,7 @@ export default function Testimonials() {
             </h3>
             <p className="text-blue-100 mb-8 max-w-2xl mx-auto">
               Join the satisfied clients who have transformed their ideas into reality. 
-              Let's discuss how we can bring your vision to life.
+              Let&apos;s discuss how we can bring your vision to life.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <motion.a
